@@ -72,10 +72,22 @@ function main() {
                 } else {
                     suggestionsList.append("<span class='no-options'>Нет вариатов</span>")
                 }
+
+                const screenWidth = $(window).width();
+                const contextMenuWidth = $('#context-menu').width();
+                const contextMenuTop = e.pageY + 10 + 'px';
+                let contextMenuLeft = e.pageX + 'px';
+                const contextMenuLeftAndWidth = e.pageX + contextMenuWidth; 
+                
+                // Если контекстное меню выходит за пределы экрана
+                // выводим меню чуть левее
+                if (contextMenuLeftAndWidth > screenWidth) {
+                    contextMenuLeft = e.pageX - (contextMenuLeftAndWidth - screenWidth) - 20 + 'px';
+                }
                 
 
                 // Позиционируем и показываем меню
-                menu.css({ top: e.pageY + 5, left: e.pageX}).fadeIn();
+                menu.css({ top: contextMenuTop, left: contextMenuLeft}).fadeIn();
             }
         });
     });
