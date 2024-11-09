@@ -14,7 +14,7 @@ function main() {
             type: "POST",
             data: { text: text },
             success: function(response) {
-                $("#editor").html(response + '<span>&nbsp;</span>'); // Обновляем содержимое с проверенными словами
+                $("#editor").html(response); // Обновляем содержимое с проверенными словами
                 moveCursorToEnd($("#editor")[0]); // Перемещаем курсор в конец
             }
         });
