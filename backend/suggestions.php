@@ -1,6 +1,7 @@
 <?php
 include ("settings/db.php");
 include ("utils/clear.php");
+include ("utils/letter_to_upper.php");
 
 if (isset($_POST['word'])) {
     $incorrectWord = clear($_POST['word']);
@@ -22,7 +23,7 @@ if (isset($_POST['word'])) {
         
         // Добавляем слова, отличающиеся на 1-2 буквы
         if ($distance > 0 && $distance <= 2) {
-            $suggestions[] = $word;
+            $suggestions[] = letter_to_upper($incorrectWord, $word);
         }
     }
     
