@@ -5,14 +5,13 @@ include ("utils/letter_to_upper.php");
 
 if (isset($_POST['word'])) {
     $incorrectWord = clear($_POST['word']);
-    $incorrectWord = str_replace("&nbsp;", '', $incorrectWord);
     $suggestions = [];
 
     // Определяем первую букву ошибочного слова
     $firstLetter = mb_substr($incorrectWord, 0, 1);
 
     // Подготавливаем запрос для получения слов, начинающихся на ту же букву
-    $stmt = $pdo->prepare("SELECT word FROM words WHERE word LIKE :firstLetter");
+    $stmt = $pdo->prepare("SELECT word FROM words WHERE word LIKE LOWER(:firstLetter)");
     $stmt->execute(['firstLetter' => $firstLetter . '%']);
 
     $words = $stmt->fetchAll(PDO::FETCH_COLUMN);

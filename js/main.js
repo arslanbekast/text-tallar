@@ -1,3 +1,8 @@
+const quill = new Quill('#editor', {
+    placeholder: 'Введите текст...',
+    theme: 'snow'
+});
+
 $(document).ready(main);
 
 function main() {
@@ -15,6 +20,7 @@ function main() {
             data: { text: text },
             success: function(response) {
                 $("#editor").html(response); // Обновляем содержимое с проверенными словами
+                $("#editor p:last").append('<span>&nbsp;</span>');
                 moveCursorToEnd($("#editor")[0]); // Перемещаем курсор в конец
             }
         });

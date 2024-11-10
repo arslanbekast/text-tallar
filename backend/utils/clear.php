@@ -1,7 +1,8 @@
 <?php
 // Функция для очистки переменной
 function clear($var) {
-    // $var = mb_strtolower($var, "UTF-8");
+    $var = str_replace('&nbsp;', ' ', $var);
+    $var = preg_replace('/\s+/', ' ', $var);
     $var = trim($var);
     // $var = strip_tags($var);
     // $var = htmlentities($var, ENT_IGNORE, "UTF-8");
