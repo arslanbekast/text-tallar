@@ -16,6 +16,6 @@ function ba_chars($word) {
         $word = preg_replace($after_chars_pattern, '', $word);
     }
 
-    return [$before_chars, $after_chars];
+    return [$word, $before_chars, $after_chars];
 }
 ?>
