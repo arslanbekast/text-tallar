@@ -9,7 +9,7 @@
 </head>
 <body>
     <main>
-        <div id='editor' class="editor" contenteditable="true" spellcheck="false"></div>
+        <div id='editor' class="editor" contenteditable="false" spellcheck="false"></div>
         <div id="context-menu">
             <ul id="suggestions"></ul>
         </div>

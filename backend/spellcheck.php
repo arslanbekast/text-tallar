@@ -26,13 +26,13 @@ if (isset($_POST['text'])) {
         foreach ($words as &$word) {
 
             // Получаем символы до и после слова
-            [$before_chars, $after_chars] = ba_chars($word);
+            [$cleared_word, $before_chars, $after_chars] = ba_chars($word);
 
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM words WHERE word = :word");
-            $stmt->execute(['word' => $word]);
+            $stmt->execute(['word' => $cleared_word]);
             
             if ($stmt->fetchColumn() == 0) { // Если слово не найдено в базе данных
-                $word = "$before_chars<span class='spell-error'>$word</span>$after_chars"; // Оборачиваем ошибочные слова
+                $word = "$before_chars<span class='spell-error'>$cleared_word</span>$after_chars"; // Оборачиваем ошибочные слова
             }
         }
 
