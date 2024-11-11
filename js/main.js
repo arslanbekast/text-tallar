@@ -1,53 +1,67 @@
-
-
 $(document).ready(main);
 
 function main() {
-
-    const quill = new Quill('#editor', {
-        placeholder: 'Введите текст...',
-        theme: 'snow'
-    });
-
     let timer;
 
-    quill.on('text-change', (delta, oldDelta, source) => {
-        if (source === 'user') {
-            clearTimeout(timer);
-            // if (e.key === " ") {  // Если нажата клавиша пробела
-            //     timer = setTimeout(checkSpelling, 500); // Отправляем запрос с задержкой в 700 мс
-            // }
-            timer = setTimeout(checkSpelling, 500);
-        }
-        
-    });
+    // let savedRange = null; // Переменная для хранения позиции курсора
 
-    
-
-    let savedRange = null; // Переменная для хранения позиции курсора
-    
-    // Функция для сохранения текущей позиции курсора
+    // // Сохранение текущей позиции курсора
     // function saveCursorPosition() {
     //     const selection = window.getSelection();
+        
+    //     // Проверяем, есть ли выделение
     //     if (selection.rangeCount > 0) {
+    //         // Сохраняем текущий диапазон (Range) из выделения
     //         savedRange = selection.getRangeAt(0);
     //     }
     // }
 
-    // Функция для восстановления позиции курсора
+    // // Восстановление позиции курсора
     // function restoreCursorPosition() {
     //     if (savedRange) {
     //         const selection = window.getSelection();
-    //         selection.removeAllRanges();
-    //         selection.addRange(savedRange);
+    //         selection.removeAllRanges();         // Очищаем текущее выделение
+    //         selection.addRange(savedRange);      // Устанавливаем сохранённый диапазон
     //     }
     // }
 
+    // Переменные для хранения начала и конца выделения
+    let startOffset = null;
+    let endOffset = null;
+
+    // Сохранение текущей позиции курсора
+    function saveCursorPosition() {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        startOffset = range.startOffset;
+        endOffset = range.endOffset;
+        console.log('Позиция курсора сохранена:', startOffset, endOffset);
+        }
+    }
+
+    // Восстановление позиции курсора
+    function restoreCursorPosition() {
+        if (startOffset !== null && endOffset !== null) {
+        const editableDiv = document.getElementById('editor');
+        const selection = window.getSelection();
+        selection.removeAllRanges();  // Убираем текущее выделение
+        
+        const range = document.createRange();
+        range.setStart(editableDiv.firstChild, startOffset);
+        range.setEnd(editableDiv.firstChild, endOffset);
+        
+        selection.addRange(range);  // Восстанавливаем курсор
+        console.log('Позиция курсора восстановлена.');
+        }
+    }
+
     // Функция для отправки текста на сервер
     function checkSpelling() {
-        // const text = $("#editor").html();
-        const text = quill.getSemanticHTML();
-        console.log(text);
+
+        const text = $("#editor").html();
+        saveCursorPosition();
+        // console.log(savedRange);
         if (!text) return;
         
         $.ajax({
@@ -55,11 +69,10 @@ function main() {
             type: "POST",
             data: { text: text },
             success: function(response) {
-                quill.clipboard.dangerouslyPasteHTML(response);
-                console.log(response);
-                // $("#editor").html(response); // Обновляем содержимое с проверенными словами
-                // $("#editor p:last").append('<span>&nbsp;</span>');
-                // restoreCursorPosition();
+                $("#editor").html(response); // Обновляем содержимое с проверенными словами
+                $("#editor p:last").append('<span>&nbsp;</span>');
+                // setTimeout(restoreCursorPosition, 0)
+                restoreCursorPosition();
                 // moveCursorToEnd($("#editor")[0]); // Перемещаем курсор в конец
             }
         });
@@ -72,15 +85,14 @@ function main() {
     
 
     // Отслеживаем изменения в contenteditable
-    // $("#editor").on("keydown", function(e) {
-    //     saveCursorPosition();
-    //     clearTimeout(timer);
-    //     // timer = setTimeout(checkSpelling, 1000); // Отправляем запрос с задержкой в 700 мс
-    //     if (e.key === " ") {  // Если нажата клавиша пробела
-    //         timer = setTimeout(checkSpelling, 500); // Отправляем запрос с задержкой в 700 мс
-    //     }
+    $("#editor").on("keydown", function(e) {
+        clearTimeout(timer);
+        timer = setTimeout(checkSpelling, 1000); // Отправляем запрос с задержкой в 700 мс
+        // if (e.key === " ") {  // Если нажата клавиша пробела
+        //     timer = setTimeout(checkSpelling, 500); // Отправляем запрос с задержкой в 700 мс
+        // }
         
-    // });
+    });
 
     // Функция для перемещения курсора в конец contenteditable
     function moveCursorToEnd(element) {

@@ -13,26 +13,26 @@ main {
 	/* max-width: 1600px; */
 	padding: 50px 15px;
 	margin: 0 auto;
-	/* background-color: rgb(230 230 230); */
+	background-color: rgb(230 230 230);
 }
 .editor {
 	width: 100%;
 	max-width: 900px;
 	margin: auto;
-	/* min-height: 150vh;
+	min-height: 150vh;
 	line-height: 1.5;
     font-size: 14pt;
 	text-align: justify;
 	padding: 25px;
 	background-color: #fff;
-	border: 2px solid #ddd; */
+	border: 2px solid #ddd;
 }
 .editor:focus {
 	outline: none;
 }
-/* .editor p {
+.editor p {
 	margin: 0;
-} */
+}
 .spell-error {
 	text-decoration: underline; 
 	text-decoration-style: wavy; 
