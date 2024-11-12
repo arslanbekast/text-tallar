@@ -71,9 +71,8 @@ function main() {
             success: function(response) {
                 $("#editor").html(response); // Обновляем содержимое с проверенными словами
                 $("#editor p:last").append('<span>&nbsp;</span>');
-                // setTimeout(restoreCursorPosition, 0)
-                restoreCursorPosition();
-                // moveCursorToEnd($("#editor")[0]); // Перемещаем курсор в конец
+                // restoreCursorPosition();
+                moveCursorToEnd($("#editor")[0]); // Перемещаем курсор в конец
             }
         });
     }
@@ -159,6 +158,8 @@ function main() {
         $errorWord.text(newWord).removeClass("spell-error current");
 
         $("#context-menu").hide();
+        $('#editor').focus();
+        moveCursorToEnd($("#editor")[0]); // Перемещаем курсор в конец
     });
 
     // Закрываем контекстное меню при клике вне его
