@@ -33,23 +33,19 @@ main {
 .editor p {
 	margin: 0;
 }
+.editor:empty::before {
+    content: "Введите текст...";
+    color: #aaa; 
+    font-style: italic;
+}
 .spell-error {
+	display: inline-block;
+	position: relative;
 	text-decoration: underline; 
 	text-decoration-style: wavy; 
 	text-decoration-color: red;
 	text-decoration-skip-ink: none
 }
-/* .spell-error::after {
-    content: ''; 
-    position: absolute; 
-    left: 0; 
-    bottom: 0; 
-    width: 100%; 
-    height: 1px; 
-    background: red; 
-    border-bottom: 1px dashed red; 
-    pointer-events: none; 
-} */
 
 #context-menu {
 	display: none;
@@ -69,6 +65,14 @@ main {
 }
 #context-menu ul li:hover {
 	background-color: #eee;
+}
+#context-menu.loading {
+	display: block;
+	width: 50px;
+	height: 25px;
+	background-image: url('../images/loader.gif');
+	background-position: center;
+	background-repeat: no-repeat;
 }
 .no-options {
 	display: inline-block;
