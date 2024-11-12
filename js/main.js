@@ -56,11 +56,28 @@ function main() {
         }
     }
 
+    function showContextMenu(e) {
+        const menu = $("#context-menu");
+        const screenWidth = $(window).width();
+        const contextMenuWidth = menu.width();
+        const contextMenuTop = e.pageY + 10 + 'px';
+        let contextMenuLeft = e.pageX + 'px';
+        const contextMenuLeftAndWidth = e.pageX + contextMenuWidth; 
+        
+        // Если контекстное меню выходит за пределы экрана
+        // выводим меню чуть левее
+        if (contextMenuLeftAndWidth > screenWidth) {
+            contextMenuLeft = e.pageX - (contextMenuLeftAndWidth - screenWidth) - 20 + 'px';
+        }
+        // Позиционируем и показываем меню
+        menu.css({ top: contextMenuTop, left: contextMenuLeft}).fadeIn();
+    }
+
     // Функция для отправки текста на сервер
     function checkSpelling() {
 
         const text = $("#editor").html();
-        saveCursorPosition();
+        // saveCursorPosition();
         // console.log(savedRange);
         if (!text) return;
         
@@ -108,21 +125,23 @@ function main() {
         e.preventDefault();
         const currentWord = $(this);
         const incorrectWord = currentWord.text();
+        const menu = $("#context-menu");
+        const suggestionsList = $("#suggestions");
         $('.spell-error').removeClass('current');
         currentWord.addClass('current');
-
+        menu.addClass('loading');
+        suggestionsList.empty();
+        showContextMenu(e);
+    
         // Отправляем запрос для получения вариантов исправления
         $.ajax({
             url: "backend/suggestions.php",
             type: "POST",
             data: { word: incorrectWord },
             success: function(response) {
-                const menu = $("#context-menu");
-                const suggestionsList = $("#suggestions");
                 const suggestions = JSON.parse(response);
-
+                menu.removeClass('loading');
                 // Очищаем меню и добавляем новые варианты
-                suggestionsList.empty();
                 if (suggestions.length) {
                     suggestions.forEach(suggestion => {
                         suggestionsList.append(`<li>${suggestion}</li>`);
@@ -130,22 +149,7 @@ function main() {
                 } else {
                     suggestionsList.append("<span class='no-options'>Нет вариатов</span>")
                 }
-
-                const screenWidth = $(window).width();
-                const contextMenuWidth = $('#context-menu').width();
-                const contextMenuTop = e.pageY + 10 + 'px';
-                let contextMenuLeft = e.pageX + 'px';
-                const contextMenuLeftAndWidth = e.pageX + contextMenuWidth; 
-                
-                // Если контекстное меню выходит за пределы экрана
-                // выводим меню чуть левее
-                if (contextMenuLeftAndWidth > screenWidth) {
-                    contextMenuLeft = e.pageX - (contextMenuLeftAndWidth - screenWidth) - 20 + 'px';
-                }
-                
-
-                // Позиционируем и показываем меню
-                menu.css({ top: contextMenuTop, left: contextMenuLeft}).fadeIn();
+                showContextMenu(e);
             }
         });
     });
@@ -153,9 +157,9 @@ function main() {
     // Обработчик для клика по варианту исправления
     $(document).on("click", "#suggestions li", function() {
         const newWord = $(this).text();
-        const $errorWord = $(".spell-error.current");
+        const errorWord = $(".spell-error.current");
         
-        $errorWord.text(newWord).removeClass("spell-error current");
+        errorWord.text(newWord).removeClass("spell-error current");
 
         $("#context-menu").hide();
         $('#editor').focus();
