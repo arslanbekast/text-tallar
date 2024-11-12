@@ -3,7 +3,7 @@
 function clear($var) {
     $var = str_replace('&nbsp;', ' ', $var);
     $var = preg_replace('/\s+/', ' ', $var);
-    // $var = trim($var);
+    $var = trim($var);
     // $var = strip_tags($var);
     // $var = htmlentities($var, ENT_IGNORE, "UTF-8");
     $var = stripcslashes($var);
